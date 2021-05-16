@@ -1,0 +1,396 @@
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3FF1           00001 __CONFIG _CP_OFF & _WDT_OFF & _PWRTE_ON & _XT_OSC
+                      00002 
+                      00003 
+                      00004 ;____________________________________________________
+                      00005 ;||------------------------------------------------||
+                      00006 ;||     SEMÁFORO DE DOS VIAS CON INTERRUPTORES PARA    ||
+                      00007 ;||     PEATONES,DESARROLLADO POR:                                         ||
+                      00008 ;||     JESSICA LILIAN BECERRA HERNANDEZ                           ||
+                      00009 ;||     VALERIA MONROY MIRANDA                                             ||
+                      00010 ;||     JOSE LUCIO HERNANDEZ NOGUEZ                                        ||
+                      00011 ;||________________________________________________||
+                      00012 ;----------------------------------------------------
+                      00013 
+                      00014 
+Warning[205]: Found directive in column 1. (PROCESSOR)
+                      00015 PROCESSOR               16F84A                  ;PROCESADOR A USAR ES EL DEL PIC16F84A
+                      00016 #INCLUDE                <P16F84A.INC>   ;LIBRERIA DEL MICROCONTROLADOR
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F84A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00208         LIST
+                      00017 
+                      00018 
+                      00019 ;________________________________________________________
+                      00020 ;                               CONFIGURACION DE PUERTOS
+                      00021 ;________________________________________________________
+                      00022 
+                      00023 
+Warning[205]: Found directive in column 1. (ORG)
+0000                  00024 ORG             0X00                    ;ORIGEN
+                      00025 
+Warning[203]: Found opcode in column 1. (BSF)
+0000   1683           00026 BSF                     STATUS,RP0              ;BANCO DE MEMORIA 0
+Warning[203]: Found opcode in column 1. (MOVLW)
+0001   3001           00027 MOVLW           B'00000001'             ;PUERTO RA1 COMO ENTRADA
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0002   0085           00028 MOVWF           TRISA
+                      00029 
+Warning[203]: Found opcode in column 1. (CLRF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0003   0186           00030 CLRF            TRISB                   ;PUERTOS RB0-7 COMO SALIDAS
+Warning[203]: Found opcode in column 1. (BCF)
+0004   1283           00031 BCF             STATUS,RP0              ;CAMBIO DE BANCO DE MEMORIA AL BANCO 1
+                      00032 
+                      00033 
+Warning[205]: Found directive in column 1. (CBLOCK)
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00034 CBLOCK 0x10                 ; Almacenamiento Temporal
+  00000010            00035         contador1
+  00000011            00036         contador2
+  00000012            00037         contador3
+  00000013            00038         Paso
+Warning[205]: Found directive in column 1. (ENDC)
+                      00039 ENDC
+                      00040 
+                      00041 
+                      00042 
+0005                  00043 INICIO
+                      00044 
+                      00045 ;MOVFW          PORTA                   ;MOVER LOS REGISTROS DE A --> W
+                      00046 ;ANDLW          B'1'                    ;0,1
+                      00047 ;CALL           CASOS                   ;
+                      00048 
+                      00049 
+                      00050 
+                      00051 ;CASOS
+                      00052 ;ADDWF          PCL,F                   ;SUMA PARA ACCEDER A LA TABLA
+                      00053 
+                      00054 ;NOP                    
+                      00055 ;CALL           RUTA                    ;DONDE VA EL RECORRIDO
+                      00056 
+                      00057 
+                      00058 ;RUTA   
+                      00059 ;MOVFW          Paso
+                      00060 ;CALL           SABERPASO
+                      00061 
+                      00062 ;============================================
+                      00063 ;                               BUCLE DEL SEMAFORO
+                      00064 ;============================================
+                      00065 
+                      00066 
+0005                  00067 CASO1
+                      00068 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0005   3011           00069 MOVLW           B'00010001'             ;ROJO1 ENCENDIDIO VERDE2 ENCENDIDO
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0006   0086           00070 MOVWF           TRISB                   ;COLOCAMOS LOS VALORES EN PORTB
+Warning[203]: Found opcode in column 1. (MOVLW)
+0007   3000           00071 MOVLW           D'0'
+Warning[203]: Found opcode in column 1. (MOVWF)
+0008   0093           00072 MOVWF           Paso                                    
+Warning[203]: Found opcode in column 1. (CALL)
+0009   201D           00073 CALL            RETARDO                 ;RETARDO
+Warning[203]: Found opcode in column 1. (CALL)
+000A   200B           00074 CALL            AMARILLO2
+                      00075 
+000B                  00076 AMARILLO2
+Warning[203]: Found opcode in column 1. (MOVLW)
+000B   3009           00077 MOVLW           B'00001001'             ;ENCENDEMOS AMARILLO1 ROJO1                                     
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                                    0       0       1       0       0       1       0       0       
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000C   0086           00078 MOVWF           TRISB                   ;COLOCAMOS LOS VALORES EN EL SEMAFORO                   -       
+                            -       R2      V2      A2      A1      V1      R1
+Warning[203]: Found opcode in column 1. (MOVLW)
+000D   3001           00079 MOVLW           D'1'
+Warning[203]: Found opcode in column 1. (MOVWF)
+000E   0093           00080 MOVWF           Paso
+Warning[203]: Found opcode in column 1. (CALL)
+000F   2028           00081 CALL            RETARDO2        
+Warning[203]: Found opcode in column 1. (CALL)
+0010   2011           00082 CALL            CASO2
+                      00083 
+0011                  00084 CASO2
+                      00085 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0011   3022           00086 MOVLW           B'00100010'             ;VERDE1 ENCENDIDIO ROJO 2 ENCENDIDO
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0012   0086           00087 MOVWF           TRISB                   ;COLOCAMOS LOS VALORES EN EL SEMAFORO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0013   3002           00088 MOVLW           D'2'
+Warning[203]: Found opcode in column 1. (MOVWF)
+0014   0093           00089 MOVWF           Paso
+Warning[203]: Found opcode in column 1. (CALL)
+0015   201D           00090 CALL            RETARDO                 ;RETARDO
+Warning[203]: Found opcode in column 1. (CALL)
+0016   2017           00091 CALL            AMARILLO1
+                      00092 
+                      00093 
+0017                  00094 AMARILLO1
+                      00095 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0017   3024           00096 MOVLW           B'00100100'             ;ENCENDEMOS AMARILLO1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0018   0086           00097 MOVWF           TRISB                   ;COLOCAMOS LOS VALORES EN EL SEMAFORO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0019   3003           00098 MOVLW           D'3'
+Warning[203]: Found opcode in column 1. (MOVWF)
+001A   0093           00099 MOVWF           Paso
+Warning[203]: Found opcode in column 1. (CALL)
+001B   2028           00100 CALL            RETARDO2                        ;RETARDO
+Warning[203]: Found opcode in column 1. (CALL)
+001C   2005           00101 CALL            CASO1
+                      00102 
+                      00103 ;SABERPASO
+                      00104 
+                      00105 ;ADDWF  PCL,F
+                      00106 
+                      00107 ;CALL   P_2             
+                      00108 ;CALL   P_2
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00109 ;CALL   P_3
+                      00110 ;CALL   P_4
+                      00111 
+                      00112 
+                      00113 ;P_1
+                      00114 
+                      00115 ;CALL   RETARDO2
+                      00116 ;CALL   AMARILLO2
+                      00117 
+                      00118 ;P_2
+                      00119 
+                      00120 ;CALL   RETARDO2
+                      00121 ;CALL   CASO2
+                      00122 
+                      00123 ;P_3
+                      00124 
+                      00125 ;CALL   RETARDO2
+                      00126 ;CALL   AMARILLO1
+                      00127 
+                      00128 ;P_4
+                      00129 
+                      00130 ;CALL   RETARDO2
+                      00131 ;CALL   CASO1
+                      00132 
+001D                  00133 RETARDO
+001D   0190           00134         clrf     contador1              ;LIMPIAMOS CONTADOR1
+001E   0191           00135         clrf     contador2              ;LIMPIAMOS CONTADOR1
+001F   300A           00136         movlw    D'10'                                                  
+0020   0092           00137         movwf    contador3              
+0021                  00138 delay1    
+0021   0B90           00139         decfsz contador1,F              ;CONTADOR1 - 1
+0022   2821           00140         goto   delay1                   
+0023   0B91           00141         decfsz contador2,F              ;CONTADOR2 - 1
+0024   2821           00142         goto   delay1
+0025   0B92           00143         decfsz contador3,F              ;CONTADOR3 - 1
+0026   2821           00144         goto   delay1
+0027   0008           00145     return
+                      00146 
+                      00147 ;_____________________________________________________
+                      00148 ;____________________PULSADORES-AMARILLO_______________________      
+                      00149 
+                      00150 
+0028                  00151 RETARDO2
+0028   0190           00152         clrf     contador1              ;LIMPIAMOS CONTADOR1
+0029   0191           00153         clrf     contador2              ;LIMPIAMOS CONTADOR1
+002A   3005           00154         movlw    D'5'                                                   
+002B   0092           00155         movwf    contador3              
+002C                  00156 delay2    
+002C   0B90           00157         decfsz contador1,F              ;CONTADOR1 - 1
+002D   282C           00158         goto   delay2                   
+002E   0B91           00159         decfsz contador2,F              ;CONTADOR2 - 1
+002F   282C           00160         goto   delay2
+0030   0B92           00161         decfsz contador3,F              ;CONTADOR3 - 1
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0031   282C           00162         goto   delay2
+0032   0008           00163     return
+                      00164           
+                      00165 
+Warning[205]: Found directive in column 1. (END)
+                      00166 END
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+AMARILLO1                         00000017
+AMARILLO2                         0000000B
+C                                 00000000
+CASO1                             00000005
+CASO2                             00000011
+DC                                00000001
+EEADR                             00000009
+EECON1                            00000088
+EECON2                            00000089
+EEDATA                            00000008
+EEIE                              00000006
+EEIF                              00000004
+F                                 00000001
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INICIO                            00000005
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_PD                            00000003
+NOT_RBPU                          00000007
+NOT_TO                            00000004
+OPTION_REG                        00000081
+PCL                               00000002
+PCLATH                            0000000A
+PORTA                             00000005
+PORTB                             00000006
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+Paso                              00000013
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RD                                00000000
+RETARDO                           0000001D
+RETARDO2                          00000028
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RP0                               00000005
+RP1                               00000006
+STATUS                            00000003
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_CONFIG                           00002007
+_CP_OFF                           00003FFF
+_CP_ON                            0000000F
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FFD
+__16F84A                          00000001
+MPASM  5.51                          MAIN.ASM   5-16-2021  17:17:09         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__DEBUG                           1
+contador1                         00000010
+contador2                         00000011
+contador3                         00000012
+delay1                            00000021
+delay2                            0000002C
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXX-------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    51
+Program Memory Words Free:   973
+
+
+Errors   :     0
+Warnings :    35 reported,     0 suppressed
+Messages :     6 reported,     0 suppressed
+
+
